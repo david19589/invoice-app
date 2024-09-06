@@ -16,14 +16,21 @@ function Filter(props: { darkMode: boolean; openFilter: boolean }) {
   return (
     <>
       {props.openFilter && (
-        <div className="md:translate-x-[-2rem] pr-[4.5rem] p-[1.5rem] bg-[#FFF] rounded-lg shadow-custom-shadow absolute translate-x-[-5rem] translate-y-[3rem]">
+        <div
+          className={clsx(
+            props.darkMode ? "bg-[#252945]" : "bg-[#FFF]",
+            "md:translate-x-[-2rem] pr-[4.5rem] p-[1.5rem]  rounded-lg shadow-custom-shadow absolute translate-x-[-5rem] translate-y-[3rem]"
+          )}
+        >
           <div
             onClick={() => handleCheckboxClick("draft")}
             className="flex gap-[0.8rem] mb-[0.8rem] group cursor-pointer w-max"
           >
             <span
               className={clsx(
-                checked.draft
+                props.darkMode && !checked.draft
+                  ? "bg-[#1E2139]"
+                  : checked.draft
                   ? "bg-[#7C5DFA]"
                   : "bg-[#DFE3FA] group-hover:border-[0.0625rem] group-hover:border-[#7C5DFA]",
                 "flex w-4 h-4 rounded-sm transition-all duration-150 select-none"
@@ -48,7 +55,9 @@ function Filter(props: { darkMode: boolean; openFilter: boolean }) {
           >
             <span
               className={clsx(
-                checked.pending
+                props.darkMode && !checked.pending
+                  ? "bg-[#1E2139]"
+                  : checked.pending
                   ? "bg-[#7C5DFA]"
                   : "bg-[#DFE3FA] group-hover:border-[0.0625rem] group-hover:border-[#7C5DFA]",
                 "flex w-4 h-4 rounded-sm transition-all duration-150 select-none"
@@ -73,7 +82,9 @@ function Filter(props: { darkMode: boolean; openFilter: boolean }) {
           >
             <span
               className={clsx(
-                checked.paid
+                props.darkMode && !checked.paid
+                  ? "bg-[#1E2139]"
+                  : checked.paid
                   ? "bg-[#7C5DFA]"
                   : "bg-[#DFE3FA] group-hover:border-[0.0625rem] group-hover:border-[#7C5DFA]",
                 "flex w-4 h-4 rounded-sm transition-all duration-150 select-none"

@@ -1,21 +1,24 @@
 import { useState } from "react";
 import Header from "./components/header";
 import clsx from "clsx";
-import Home from "./components/home";
+import { BrowserRouter } from "react-router-dom";
+import PageRoutes from "./components/routes";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
 
   return (
-    <div
-      className={clsx(
-        darkMode ? "bg-[#141625]" : "bg-[#F8F8FB]",
-        "min-h-screen"
-      )}
-    >
-      <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-      <Home darkMode={darkMode} />
-    </div>
+    <BrowserRouter>
+      <div
+        className={clsx(
+          darkMode ? "bg-[#141625]" : "bg-[#F8F8FB]",
+          "min-h-screen"
+        )}
+      >
+        <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+        <PageRoutes darkMode={darkMode} />
+      </div>
+    </BrowserRouter>
   );
 }
 

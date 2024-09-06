@@ -1,10 +1,11 @@
 import { useState } from "react";
 import ArrowDown from "/src/assets/icon-arrow-down.svg";
 import Plus from "/src/assets/icon-plus.svg";
-
 import clsx from "clsx";
 import Filter from "../filter";
 import Invoices from "../invoices";
+import data from "../data.json";
+import NoInvoices from "../no-invoices";
 
 function Home(props: { darkMode: boolean }) {
   const [openFilter, setOpenFilter] = useState(false);
@@ -27,7 +28,7 @@ function Home(props: { darkMode: boolean }) {
               "text-[0.8rem] leading-[1rem] font-[500] tracking-[-0.01rem]"
             )}
           >
-            7 invoices
+            {data.length < 1 ? "No" : data.length} invoices
           </h3>
         </div>
         <div className="md:gap-[3rem] flex gap-[1.2rem]">
@@ -78,7 +79,11 @@ function Home(props: { darkMode: boolean }) {
           </button>
         </div>
       </div>
-      <Invoices />
+      {data.length < 1 ? (
+        <NoInvoices darkMode={props.darkMode} />
+      ) : (
+        <Invoices darkMode={props.darkMode} />
+      )}
     </div>
   );
 }
