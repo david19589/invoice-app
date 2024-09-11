@@ -4,10 +4,14 @@ import Plus from "/src/assets/icon-plus.svg";
 import clsx from "clsx";
 import Filter from "../filter";
 import Invoices from "../invoices";
-import data from "../data.json";
 import NoInvoices from "../no-invoices";
+import { Invoice } from "../utils/invoice-types";
 
-function Home(props: { darkMode: boolean }) {
+function Home(props: {
+  darkMode: boolean;
+  invoice: Invoice[];
+  status: string;
+}) {
   const [openFilter, setOpenFilter] = useState(false);
 
   return (
@@ -28,7 +32,7 @@ function Home(props: { darkMode: boolean }) {
               "text-[0.8rem] leading-[1rem] font-[500] tracking-[-0.01rem]"
             )}
           >
-            {data.length < 1 ? "No" : data.length} invoices
+            {props.invoice.length < 1 ? "No" : props.invoice.length} invoices
           </h3>
         </div>
         <div className="md:gap-[3rem] flex gap-[1.2rem]">
@@ -79,10 +83,10 @@ function Home(props: { darkMode: boolean }) {
           </button>
         </div>
       </div>
-      {data.length < 1 ? (
+      {props.invoice.length < 1 ? (
         <NoInvoices darkMode={props.darkMode} />
       ) : (
-        <Invoices darkMode={props.darkMode} />
+        <Invoices darkMode={props.darkMode} invoice={props.invoice} status={props.status}/>
       )}
     </div>
   );
