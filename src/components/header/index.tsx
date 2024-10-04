@@ -12,19 +12,19 @@ function Header(props: {
     <div
       className={clsx(
         props.darkMode ? "bg-[#1E2139]" : "bg-[#373B53]",
-        "flex justify-between items-center pr-[1.5rem] mb-[2rem]"
+        "lg:flex-col lg:h-screen lg:w-[6.5rem] lg:mb-0 lg:pr-0 lg:rounded-r-[1.25rem] lg:pb-[2rem] flex justify-between items-center pr-[1.5rem] mb-[2rem] fixed w-screen z-20"
       )}
     >
-      <div className="relative h-[4.25rem] mr-[1.5rem]">
-        <span className="flex h-[4.25rem] w-[4.5rem] bg-[#7C5DFA] rounded-tr-[1.25rem] rounded-br-[1.25rem]"></span>
+      <div className="lg:mr-0 relative h-[4.25rem] mr-[1.5rem]">
+        <span className="lg:w-[6.5rem] lg:h-[5.25rem] flex h-[4.25rem] w-[4.5rem] bg-[#7C5DFA] rounded-r-[1.25rem]"></span>
         <img
           src={Logo}
           alt="Logo"
-          className="absolute top-[1.2rem] left-5 z-10"
+          className="lg:top-[2.2rem] lg:left-[2rem] lg:w-[2.2rem] absolute top-[1.2rem] left-[1.25rem] z-10"
         />
-        <span className="flex h-[2.25rem] w-[4.5rem] bg-[#9277FF] rounded-tl-[1.25rem] rounded-br-[1.25rem] translate-y-[-2.25rem]"></span>
+        <span className="lg:w-[6.5rem] lg:h-[3.25rem] flex h-[2.25rem] w-[4.5rem] bg-[#9277FF] rounded-tl-[1.25rem] rounded-br-[1.25rem] translate-y-[-2.25rem]"></span>
       </div>
-      <div className="flex  items-center gap-[1.5rem]">
+      <div className="lg:flex-col flex items-center gap-[1.5rem]">
         <img
           onClick={() => {
             props.setDarkMode(!props.darkMode);
@@ -33,7 +33,7 @@ function Header(props: {
           alt="Moon"
           className="cursor-pointer"
         />
-        <span className="h-[4.25rem] w-[0.0625rem] bg-[#494E6E]"></span>
+        <span className="lg:rotate-90 h-[4.25rem] w-[0.0625rem] bg-[#494E6E]"></span>
         <img
           src={Profile}
           alt="Profile"

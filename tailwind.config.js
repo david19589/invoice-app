@@ -1080,6 +1080,7 @@ export default {
       boxShadow: {
         "custom-shadow": ["0 10px 20px 0 #48549F40"],
         "custom-shadow-2": ["0 10px 10px -15px #48549F40"],
+        "custom-shadow-3": ["-20px -8px 35px 20px rgba(0, 0, 0, 0.1)"],
       },
     },
   },

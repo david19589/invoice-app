@@ -1,31 +1,23 @@
 import axios from "axios";
+import { Invoice } from "../utils/invoice-types";
 
-export const getInvoice = async () => {
+const apiUrl = "http://localhost:5000/inv";
+
+const handleRequest = async <T,>(method: string, endpoint = "", data?: T) => {
+  console.log("Sending invoice data to API:", data);
   try {
-    const response = await axios.get("http://localhost:5000/inv");
+    const response = await axios({ method, url: `${apiUrl}${endpoint}`, data });
     return response.data;
   } catch (err) {
-    console.error("Error fetching invoices:", err);
+    console.error(`Error with ${method.toUpperCase()} request:`, err);
     throw err;
   }
 };
 
-export const addInvoice = async () => {
-  try {
-    const response = await axios.post("http://localhost:5000/inv");
-    return response.data;
-  } catch (err) {
-    console.error("Error adding invoice:", err);
-    throw err;
-  }
-};
-
-export const deleteInvoice = async () => {
-  try {
-    const response = await axios.delete("http://localhost:5000/inv");
-    return response.data;
-  } catch (err) {
-    console.error("Error deleting invoice:", err);
-    throw err;
-  }
-};
+export const getInvoice = () => handleRequest("get");
+export const getItems = () => handleRequest("get", "/items");
+export const addInvoice = (invoiceData: Invoice) =>
+  handleRequest("post", "", invoiceData);
+export const updateInvoice = (id: number, invoiceData: Invoice) =>
+  handleRequest("put", `/${id}`, invoiceData);
+export const deleteInvoice = (id: number) => handleRequest("delete", `/${id}`);

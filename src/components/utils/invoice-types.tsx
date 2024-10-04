@@ -1,26 +1,26 @@
-type InvoiceItem = {
-  "item-name": string;
+export type InvoiceItem = {
+  item_id: number;
+  item_name: string;
   quantity: number;
   price: number;
 };
 
 export type Invoice = {
-  "invoice-id": number;
-  "item-name": string;
-  "project-description": string;
-  "street-address": string;
+  invoice_id: number;
+  invoice_date: string;
+  payment_terms: string;
+  project_description: string;
+  item_name: string;
+  street_address: string;
   city: string;
-  "post-code": string;
+  post_code: string;
   country: string;
-  "invoice-date": string;
-  "payment-due": string;
-  "clients-name": string;
-  "clients-street-address": string;
-  "clients-city": string;
-  "clients-post-code": string;
-  "clients-country": string;
-  "clients-email": string;
-  items: InvoiceItem[];
+  clients_name: string;
+  clients_email: string;
+  clients_street_address: string;
+  clients_city: string;
+  clients_post_code: string;
+  clients_country: string;
   quantity: number;
   price: number;
 };

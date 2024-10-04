@@ -12,7 +12,7 @@ function App() {
       <div
         className={clsx(
           darkMode ? "bg-[#141625]" : "bg-[#F8F8FB]",
-          "min-h-screen"
+          "min-h-screen relative"
         )}
       >
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
