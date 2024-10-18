@@ -2,32 +2,66 @@ import calendarIcon from "/src/assets/icon-calendar.svg";
 import arrowDown from "/src/assets/icon-arrow-down.svg";
 import clsx from "clsx";
 import DatePicker from "react-datepicker";
-import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { Invoice } from "../../../../models/invoice-types";
 
 function BillTo(props: {
   darkMode: boolean;
-  netDays: number;
-  setNetDays: (status: number) => void;
-  startDate: Date | null;
-  setStartDate: (status: Date | null) => void;
+  netDays: number | null;
+  setNetDays: (status: number | null) => void;
+  newStartDate: Date | null;
+  setNewStartDate: (status: Date | null) => void;
   formattedDate: string;
+  selectedInvoice: Invoice | undefined;
+  showCalendar: boolean;
+  setShowCalendar: (status: boolean) => void;
+  openTerms: boolean;
+  setOpenTerms: (status: boolean) => void;
 }) {
-  const [showCalendar, setShowCalendar] = useState(false);
-
   const handleChangeDate = (date: Date | null) => {
     if (date) {
-      props.setStartDate(date);
+      props.setNewStartDate(date);
     }
-    setShowCalendar(false);
+    props.setShowCalendar(false);
   };
-
-  const [openTerms, setOpenTerms] = useState(false);
 
   const {
     register,
     formState: { errors },
+    setValue,
+    trigger,
   } = useFormContext();
+
+  const renderPaymentOptions = (options: { days: number; label: string }[]) => {
+    return options.map(({ days, label }, index) => (
+      <div key={days}>
+        <h2
+          onClick={() => {
+            props.setNetDays(days);
+            props.setOpenTerms(false);
+            setValue("paymentTerms", label);
+            trigger("paymentTerms");
+          }}
+          className={clsx(
+            props.darkMode
+              ? "text-[#DFE3FA] hover:text-[#7C5DFA]"
+              : "text-[#0C0E16] hover:text-[#9277FF]",
+            "text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] mx-[1.5rem] cursor-pointer transition-all duration-150"
+          )}
+        >
+          {label}
+        </h2>
+        {index < options.length - 1 && (
+          <span
+            className={clsx(
+              props.darkMode ? "bg-[#1E2139]" : "bg-[#DFE3FA]",
+              "flex h-[0.0625rem] max-w-full w-full my-[1rem]"
+            )}
+          ></span>
+        )}
+      </div>
+    ));
+  };
 
   return (
     <div>
@@ -48,12 +82,11 @@ function BillTo(props: {
           >
             Client`s Name
           </h3>
-          {errors.clientsName &&
-            typeof errors.clientsName.message === "string" && (
-              <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
-                {errors.clientsName.message}
-              </span>
-            )}
+          {errors.clientsName && (
+            <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
+              {errors.clientsName.message?.toString()}
+            </span>
+          )}
         </div>
         <input
           {...register("clientsName")}
@@ -85,12 +118,11 @@ function BillTo(props: {
           >
             Client`s Email
           </h3>
-          {errors.clientsEmail &&
-            typeof errors.clientsEmail.message === "string" && (
-              <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
-                {errors.clientsEmail.message}
-              </span>
-            )}
+          {errors.clientsEmail && (
+            <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
+              {errors.clientsEmail.message?.toString()}
+            </span>
+          )}
         </div>
         <input
           {...register("clientsEmail")}
@@ -123,12 +155,11 @@ function BillTo(props: {
           >
             Street Address
           </h3>
-          {errors.clientsStreetAddress &&
-            typeof errors.clientsStreetAddress.message === "string" && (
-              <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
-                {errors.clientsStreetAddress.message}
-              </span>
-            )}
+          {errors.clientsStreetAddress && (
+            <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
+              {errors.clientsStreetAddress.message?.toString()}
+            </span>
+          )}
         </div>
         <input
           {...register("clientsStreetAddress")}
@@ -162,12 +193,11 @@ function BillTo(props: {
               >
                 City
               </h3>
-              {errors.clientsCity &&
-                typeof errors.clientsCity.message === "string" && (
-                  <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
-                    {errors.clientsCity.message}
-                  </span>
-                )}
+              {errors.clientsCity && (
+                <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
+                  {errors.clientsCity.message?.toString()}
+                </span>
+              )}
             </div>
             <input
               {...register("clientsCity")}
@@ -199,12 +229,11 @@ function BillTo(props: {
               >
                 Post Code
               </h3>
-              {errors.clientsPostCode &&
-                typeof errors.clientsPostCode.message === "string" && (
-                  <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
-                    {errors.clientsPostCode.message}
-                  </span>
-                )}
+              {errors.clientsPostCode && (
+                <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
+                  {errors.clientsPostCode.message?.toString()}
+                </span>
+              )}
             </div>
             <input
               {...register("clientsPostCode")}
@@ -237,12 +266,11 @@ function BillTo(props: {
             >
               Country
             </h3>
-            {errors.clientsCountry &&
-              typeof errors.clientsCountry.message === "string" && (
-                <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
-                  {errors.clientsCountry.message}
-                </span>
-              )}
+            {errors.clientsCountry && (
+              <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
+                {errors.clientsCountry.message?.toString()}
+              </span>
+            )}
           </div>
           <input
             {...register("clientsCountry")}
@@ -274,7 +302,7 @@ function BillTo(props: {
                 Invoice Date
               </h3>
               <div
-                onClick={() => setShowCalendar(!showCalendar)}
+                onClick={() => props.setShowCalendar(!props.showCalendar)}
                 className={clsx(
                   props.darkMode
                     ? "bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF] border-[#252945] hover:border-[#7C5DFA]"
@@ -290,114 +318,85 @@ function BillTo(props: {
                 />
               </div>
             </div>
-            {showCalendar && (
+            {props.showCalendar && (
               <div className="md:absolute md:top-[5.5rem] select-none">
                 <DatePicker
                   {...register("invoiceDate")}
-                  selected={props.startDate}
+                  selected={props.newStartDate}
                   onChange={handleChangeDate}
                   inline
                 />
               </div>
             )}
           </div>
-          <div className="mb-[1.5rem]">
-            <h3
-              className={clsx(
-                props.darkMode ? "text-[#888EB0]" : "text-[#7E88C3]",
-                "md:w-[15rem] text-[0.9rem] leading-[1rem] tracking-[-0.00625rem] font-[500] mb-[0.6rem]"
+          <div {...register("paymentTerms")} className="mb-[1.5rem]">
+            <div className="md:max-w-[14.35rem] flex justify-between">
+              <h3
+                className={clsx(
+                  errors.paymentTerms
+                    ? "text-[#EC5757]"
+                    : props.darkMode
+                    ? "text-[#888EB0]"
+                    : "text-[#7E88C3]",
+                  "md:w-[15rem] text-[0.9rem] leading-[1rem] tracking-[-0.00625rem] font-[500] mb-[0.6rem]"
+                )}
+              >
+                Payment Terms
+              </h3>
+              {errors.paymentTerms && (
+                <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
+                  {errors.paymentTerms.message?.toString()}
+                </span>
               )}
-            >
-              Payment Terms
-            </h3>
+            </div>
             <div
               onClick={() => {
-                setOpenTerms(!openTerms);
+                props.setOpenTerms(!props.openTerms);
               }}
               className={clsx(
-                props.darkMode
+                errors.paymentTerms && props.darkMode
+                  ? "border-[#EC5757] bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF]"
+                  : errors.paymentTerms
+                  ? "border-[#EC5757]"
+                  : props.darkMode
                   ? "bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF] border-[#252945] hover:border-[#7C5DFA]"
                   : "bg-[#FFF] placeholder:text-[#0C0E16] text-[#0C0E16] border-[#DFE3FA] hover:border-[#9277FF]",
                 "flex justify-between items-center border-[0.0625rem] max-w-[20rem] w-full px-[1.25rem] py-[1rem] rounded-lg cursor-pointer mb-[0.5rem]"
               )}
             >
               <h2 className="text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700]">
-                {props.netDays !== 1
-                  ? `Net ${props.netDays} Days`
-                  : `Net ${props.netDays} Day`}
+                {props.netDays
+                  ? `Net ${props.netDays} ${
+                      props.netDays === 1 ? "Day" : "Days"
+                    }`
+                  : props.selectedInvoice?.payment_terms
+                  ? `Net ${props.selectedInvoice.payment_terms} ${
+                      Number(props.selectedInvoice.payment_terms) === 1
+                        ? "Day"
+                        : "Days"
+                    }`
+                  : "No Payment Terms Set"}
               </h2>
               <img
                 src={arrowDown}
                 alt="arrowDown"
-                className={clsx(openTerms && "rotate-180", "select-none")}
+                className={clsx(props.openTerms && "rotate-180", "select-none")}
               />
             </div>
             <div
               className={clsx(
-                openTerms
-                  ? "md:max-w-[15rem] flex flex-col absolute max-w-[20rem] w-full bg-[#FFF] shadow-custom-shadow py-[1rem] rounded-lg select-none"
+                props.darkMode ? "bg-[#252945]" : "bg-[#FFF]",
+                props.openTerms
+                  ? "md:max-w-[15rem] flex flex-col absolute max-w-[20rem] w-full shadow-custom-shadow py-[1rem] rounded-lg select-none"
                   : "hidden"
               )}
             >
-              <h2
-                onClick={() => {
-                  props.setNetDays(1);
-                  setOpenTerms(false);
-                }}
-                className={clsx(
-                  props.darkMode
-                    ? "text-[#DFE3FA] hover:text-[#7C5DFA]"
-                    : "text-[#0C0E16] hover:text-[#9277FF]",
-                  "text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] mx-[1.5rem] cursor-pointer transition-all duration-150"
-                )}
-              >
-                Net 1 Day
-              </h2>
-              <span className="flex h-[0.0625rem] max-w-full w-full bg-[#DFE3FA] my-[1rem]"></span>
-              <h2
-                onClick={() => {
-                  props.setNetDays(7);
-                  setOpenTerms(false);
-                }}
-                className={clsx(
-                  props.darkMode
-                    ? "text-[#DFE3FA] hover:text-[#7C5DFA]"
-                    : "text-[#0C0E16] hover:text-[#9277FF]",
-                  "text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] mx-[1.5rem] cursor-pointer transition-all duration-150"
-                )}
-              >
-                Net 7 Days
-              </h2>
-              <span className="flex h-[0.0625rem] w-full bg-[#DFE3FA] my-[1rem]"></span>
-              <h2
-                onClick={() => {
-                  props.setNetDays(14);
-                  setOpenTerms(false);
-                }}
-                className={clsx(
-                  props.darkMode
-                    ? "text-[#DFE3FA] hover:text-[#7C5DFA]"
-                    : "text-[#0C0E16] hover:text-[#9277FF]",
-                  "text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] mx-[1.5rem] cursor-pointer transition-all duration-150"
-                )}
-              >
-                Net 14 Days
-              </h2>
-              <span className="flex h-[0.0625rem] w-full bg-[#DFE3FA] my-[1rem]"></span>
-              <h2
-                onClick={() => {
-                  props.setNetDays(30);
-                  setOpenTerms(false);
-                }}
-                className={clsx(
-                  props.darkMode
-                    ? "text-[#DFE3FA] hover:text-[#7C5DFA]"
-                    : "text-[#0C0E16] hover:text-[#9277FF]",
-                  "text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] mx-[1.5rem] cursor-pointer transition-all duration-150"
-                )}
-              >
-                Net 30 Days
-              </h2>
+              {renderPaymentOptions([
+                { days: 1, label: "Net 1 Day" },
+                { days: 7, label: "Net 7 Days" },
+                { days: 14, label: "Net 14 Days" },
+                { days: 30, label: "Net 30 Days" },
+              ])}
             </div>
           </div>
         </div>
@@ -415,12 +414,11 @@ function BillTo(props: {
             >
               Project Description
             </h3>
-            {errors.projectDescription &&
-              typeof errors.projectDescription.message === "string" && (
-                <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
-                  {errors.projectDescription.message}
-                </span>
-              )}
+            {errors.projectDescription && (
+              <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
+                {errors.projectDescription.message?.toString()}
+              </span>
+            )}
           </div>
           <input
             {...register("projectDescription")}

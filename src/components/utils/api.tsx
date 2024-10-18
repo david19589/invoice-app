@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Invoice } from "../utils/invoice-types";
+import { FormData } from "../utils/schema";
 
 const apiUrl = "http://localhost:5000/inv";
 
@@ -15,9 +15,11 @@ const handleRequest = async <T,>(method: string, endpoint = "", data?: T) => {
 };
 
 export const getInvoice = () => handleRequest("get");
-export const getItems = () => handleRequest("get", "/items");
-export const addInvoice = (invoiceData: Invoice) =>
+export const addInvoice = (invoiceData: FormData) =>
   handleRequest("post", "", invoiceData);
-export const updateInvoice = (id: number, invoiceData: Invoice) =>
+export const updateInvoice = (id: string, invoiceData: FormData) =>
   handleRequest("put", `/${id}`, invoiceData);
-export const deleteInvoice = (id: number) => handleRequest("delete", `/${id}`);
+export const updateInvoiceStatus = (id: string, invoiceStatus: string) =>
+  handleRequest("put", `/${id}`, { invoiceStatus });
+export const invoiceDeletion = (id: string) =>
+  handleRequest("delete", `/${id}`);

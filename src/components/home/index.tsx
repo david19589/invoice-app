@@ -5,34 +5,24 @@ import clsx from "clsx";
 import Filter from "../filter";
 import Invoices from "../invoices";
 import NoInvoices from "../no-invoices";
-import { Invoice, InvoiceItem } from "../utils/invoice-types";
+import { Invoice } from "../models/invoice-types";
 import NewInvoice from "./new-invoice";
 
 function Home(props: {
   darkMode: boolean;
   invoice: Invoice[];
   setInvoice: (status: Invoice[]) => void;
-  status: string;
-  setStatus: (status: string) => void;
-  items: InvoiceItem[];
-  netDays: number;
-  setNetDays: (status: number) => void;
-  formattedPayment: string;
-  setItems: (status: InvoiceItem[]) => void;
-  startDate: Date | null;
-  setStartDate: (status: Date | null) => void;
+  netDays: number | null;
+  setNetDays: (status: number | null) => void;
 }) {
   const [openFilter, setOpenFilter] = useState(false);
   const [openNewInvoice, setOpenNewInvoice] = useState(false);
-
-  const formattedDate = new Date(props.startDate || "").toLocaleDateString(
-    "en-GB",
-    {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }
-  );
+  const [newStartDate, setNewStartDate] = useState<Date | null>(null);
+  const [checked, setChecked] = useState({
+    draft: false,
+    pending: false,
+    paid: false,
+  });
 
   return (
     <div className="flex flex-col justify-center items-center p-[1.5rem] w-full">
@@ -84,7 +74,12 @@ function Home(props: {
               className={clsx(openFilter && "rotate-180")}
             />
           </div>
-          <Filter openFilter={openFilter} darkMode={props.darkMode} />
+          <Filter
+            openFilter={openFilter}
+            darkMode={props.darkMode}
+            checked={checked}
+            setChecked={setChecked}
+          />
           <button
             onClick={() => {
               setOpenNewInvoice(true);
@@ -114,14 +109,15 @@ function Home(props: {
         </div>
       </div>
       {props.invoice.length < 1 ? (
-        <NoInvoices darkMode={props.darkMode} />
+        <NoInvoices
+          darkMode={props.darkMode}
+          setOpenNewInvoice={setOpenNewInvoice}
+        />
       ) : (
         <Invoices
           darkMode={props.darkMode}
           invoice={props.invoice}
-          status={props.status}
-          items={props.items}
-          formattedPayment={props.formattedPayment}
+          checked={checked}
         />
       )}
       <NewInvoice
@@ -131,10 +127,9 @@ function Home(props: {
         netDays={props.netDays}
         setNetDays={props.setNetDays}
         setInvoice={props.setInvoice}
-        setItems={props.setItems}
-        startDate={props.startDate}
-        setStartDate={props.setStartDate}
-        formattedDate={formattedDate}
+        newStartDate={newStartDate}
+        setNewStartDate={setNewStartDate}
+        invoice={props.invoice}
       />
     </div>
   );

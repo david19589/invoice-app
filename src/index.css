@@ -23,5 +23,5 @@ body {
 .custom-scrollbar {
   scrollbar-width: thin;
   border-radius: 5px;
-  scrollbar-color: rgba(0,0,0,.226) transparent
+  scrollbar-color: rgba(0, 0, 0, 0.226) transparent;
 }

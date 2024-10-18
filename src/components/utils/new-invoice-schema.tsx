@@ -23,39 +23,32 @@ export const schema: ZodType<FormData> = z.object({
   streetAddress: z
     .string()
     .min(1, { message: "min 1 char." })
-    .max(40, { message: "max 40 char." }),
+    .max(40, { message: "max 40 char." })
+    .regex(/^[A-Za-z0-9 ]+$/, { message: "Invalid character." }),
 
   city: z
     .string()
     .min(1, { message: "min 1 char." })
     .max(25, { message: "max 25 char." })
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+    .regex(/^[A-Za-z ]+$/, { message: "Invalid character." }),
 
   postCode: z
     .string()
     .min(1, { message: "min 1 char." })
     .max(10, { message: "max 10 char." })
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+    .regex(/^[A-Za-z0-9 ]+$/, { message: "Invalid character." }),
 
   country: z
     .string()
     .min(1, { message: "min 1 char." })
     .max(40, { message: "max 40 char." })
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+    .regex(/^[A-Za-z ]+$/, { message: "Invalid character." }),
 
   clientsName: z
     .string()
     .min(1, { message: "min 1 char." })
     .max(25, { message: "max 25 char." })
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+    .regex(/^[A-Za-z ]+$/, { message: "Invalid character." }),
 
   clientsEmail: z
     .string()
@@ -67,53 +60,41 @@ export const schema: ZodType<FormData> = z.object({
     .string()
     .min(1, { message: "min 1 char." })
     .max(40, { message: "max 40 char." })
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+    .regex(/^[A-Za-z0-9 ]+$/, { message: "Invalid character." }),
 
   clientsCity: z
     .string()
     .min(1, { message: "min 1 char." })
     .max(40, { message: "max 40 char." })
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+    .regex(/^[A-Za-z ]+$/, { message: "Invalid character." }),
 
   clientsPostCode: z
     .string()
     .min(1, { message: "min 1 char." })
     .max(10, { message: "max 10 char." })
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+    .regex(/^[A-Za-z0-9 ]+$/, { message: "Invalid character." }),
 
   clientsCountry: z
     .string()
     .min(1, { message: "min 1 char." })
     .max(40, { message: "max 40 char." })
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+    .regex(/^[A-Za-z ]+$/, { message: "Invalid character." }),
 
-  invoiceDate: z.string(),
+  invoiceDate: z.string().optional(),
 
-  paymentTerms: z.string(),
+  paymentTerms: z.string().nonempty("required"),
 
   projectDescription: z
     .string()
     .min(1, { message: "min 1 char." })
     .max(40, { message: "max 40 char." })
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+    .regex(/^[A-Za-z ]+$/, { message: "Invalid character." }),
 
   itemName: z
     .string()
     .min(1, { message: "min 1 char." })
     .max(30, { message: "max 30 char." })
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+    .regex(/^[A-Za-z ]+$/, { message: "Invalid character." }),
 
   quantity: z
     .number({ message: "invalid." })

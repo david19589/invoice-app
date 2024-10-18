@@ -25,17 +25,17 @@ function BillFrom(props: { darkMode: boolean }) {
           >
             Street Address
           </h3>
-          {errors.streetAddress &&
-            typeof errors.streetAddress.message === "string" && (
-              <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
-                {errors.streetAddress.message}
-              </span>
-            )}
+          {errors.streetAddress && (
+            <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
+              {errors.streetAddress.message?.toString()}
+            </span>
+          )}
         </div>
         <input
           {...register("streetAddress")}
           type="text"
           id="street-address"
+          autoComplete="street-address"
           className={clsx(
             errors.streetAddress && props.darkMode
               ? "border-[#EC5757] bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF]"
@@ -64,9 +64,9 @@ function BillFrom(props: { darkMode: boolean }) {
               >
                 City
               </h3>
-              {errors.city && typeof errors.city.message === "string" && (
+              {errors.city && (
                 <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#F45f] mr-[1rem]">
-                  {errors.city.message}
+                  {errors.city.message?.toString()}
                 </span>
               )}
             </div>
@@ -100,12 +100,11 @@ function BillFrom(props: { darkMode: boolean }) {
               >
                 Post Code
               </h3>
-              {errors.postCode &&
-                typeof errors.postCode.message === "string" && (
-                  <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#F45f] mr-[1rem]">
-                    {errors.postCode.message}
-                  </span>
-                )}
+              {errors.postCode && (
+                <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#F45f] mr-[1rem]">
+                  {errors.postCode.message?.toString()}
+                </span>
+              )}
             </div>
             <input
               {...register("postCode")}
@@ -138,9 +137,9 @@ function BillFrom(props: { darkMode: boolean }) {
             >
               Country
             </h3>
-            {errors.country && typeof errors.country.message === "string" && (
+            {errors.country && (
               <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#F45f] mr-[1rem]">
-                {errors.country.message}
+                {errors.country.message?.toString()}
               </span>
             )}
           </div>
@@ -148,6 +147,7 @@ function BillFrom(props: { darkMode: boolean }) {
             {...register("country")}
             type="text"
             id="country"
+            autoComplete="country"
             className={clsx(
               errors.country && props.darkMode
                 ? "border-[#EC5757] bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF]"

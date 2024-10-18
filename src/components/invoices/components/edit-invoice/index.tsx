@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import { Invoice, InvoiceItem } from "../../../utils/invoice-types";
+import { Invoice } from "../../../models/invoice-types";
 import arrowLeft from "/src/assets/icon-arrow-left.svg";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import BillFrom from "./components/bill-from";
 import BillTo from "./components/bill-to";
@@ -9,22 +9,23 @@ import ItemList from "./components/item-list";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormData, schema } from "../../../utils/schema";
-import { getInvoice, getItems, updateInvoice } from "../../../utils/api";
+import { getInvoice, updateInvoice } from "../../../utils/api";
 
 function EditInvoice(props: {
   darkMode: boolean;
   selectedInvoice: Invoice;
   openEdit: boolean;
   setOpenEdit: (status: boolean) => void;
-  selectedItem: InvoiceItem;
-  netDays: number;
-  setNetDays: (status: number) => void;
+  netDays: number | null;
+  setNetDays: (status: number | null) => void;
   setInvoice: (status: Invoice[]) => void;
-  setItems: (status: InvoiceItem[]) => void;
   startDate: Date | null;
   setStartDate: (status: Date | null) => void;
   formattedDate: string;
 }) {
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [openTerms, setOpenTerms] = useState(false);
+
   useEffect(() => {
     if (props.openEdit) {
       document.body.style.overflowY = "hidden";
@@ -42,21 +43,23 @@ function EditInvoice(props: {
 
   const { handleSubmit, reset } = methods;
 
-  const onSubmit = async (data: Invoice) => {
+  const onSubmit = async (data: FormData) => {
     try {
       const invoiceData = {
         ...data,
-        invoice_id: props.selectedInvoice.invoice_id,
-        invoice_date: props.startDate?.toISOString(),
+        id: props.selectedInvoice.id,
+        invoiceDate: props.startDate?.toISOString() || "",
+        paymentTerms: props.netDays?.toString() || "",
       };
-      await updateInvoice(invoiceData.invoice_id, invoiceData);
+      await updateInvoice(invoiceData.id, invoiceData);
     } catch (err) {
       console.error("Error updating invoice:", err);
     }
     reset();
     props.setInvoice(await getInvoice());
-    props.setItems(await getItems());
     props.setOpenEdit(false);
+    setShowCalendar(false);
+    setOpenTerms(false);
   };
 
   return (
@@ -72,7 +75,7 @@ function EditInvoice(props: {
             className={clsx(
               props.openEdit ? "translate-x-0" : "translate-x-[-100rem]",
               props.darkMode ? "bg-[#141625]" : "bg-[#FFF]",
-              "md:max-w-[38.5rem] md:p-[3.5rem] md:pt-[6rem] flex flex-col p-[1.5rem] pt-[6rem] max-w-[23rem] h-screen rounded-r-lg transition-all duration-250 overflow-y-auto custom-scrollbar"
+              "lg:pt-[3rem] md:max-w-[38.5rem] md:p-[3.5rem] md:pt-[6rem] flex flex-col p-[1.5rem] pt-[6rem] max-w-[23rem] h-screen rounded-r-lg transition-all duration-250 overflow-y-auto custom-scrollbar"
             )}
           >
             <button
@@ -110,7 +113,7 @@ function EditInvoice(props: {
                     "text-[1.5rem] leading-[2rem] tracking-[-0.030rem] font-[700]"
                   )}
                 >
-                  {props.selectedInvoice.invoice_id}
+                  {props.selectedInvoice.id.slice(0, 6)}
                 </h2>
               </div>
             </div>
@@ -127,10 +130,14 @@ function EditInvoice(props: {
                 startDate={props.startDate}
                 setStartDate={props.setStartDate}
                 formattedDate={props.formattedDate}
+                showCalendar={showCalendar}
+                setShowCalendar={setShowCalendar}
+                openTerms={openTerms}
+                setOpenTerms={setOpenTerms}
               />
               <ItemList
                 darkMode={props.darkMode}
-                selectedItem={props.selectedItem}
+                selectedInvoice={props.selectedInvoice}
               />
             </div>
           </div>
@@ -142,8 +149,13 @@ function EditInvoice(props: {
             )}
           >
             <button
+              type="button"
               onClick={() => {
                 props.setOpenEdit(false);
+                props.setStartDate(null);
+                props.setNetDays(null);
+                setShowCalendar(false);
+                setOpenTerms(false);
                 reset();
               }}
               className={clsx(

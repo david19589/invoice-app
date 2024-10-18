@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import { Invoice, InvoiceItem } from "../../utils/invoice-types";
+import { Invoice } from "../../models/invoice-types";
 import arrowLeft from "/src/assets/icon-arrow-left.svg";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import BillFrom from "./components/bill-from";
 import BillTo from "./components/bill-to";
@@ -9,20 +9,24 @@ import ItemList from "./components/item-list";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormData, schema } from "../../utils/new-invoice-schema";
-import { addInvoice } from "../../utils/api";
+import { addInvoice, getInvoice } from "../../utils/api";
+import { useParams } from "react-router-dom";
 
 function NewInvoice(props: {
   darkMode: boolean;
   openNewInvoice: boolean;
   setOpenNewInvoice: (status: boolean) => void;
-  netDays: number;
-  setNetDays: (status: number) => void;
+  netDays: number | null;
+  setNetDays: (status: number | null) => void;
   setInvoice: (status: Invoice[]) => void;
-  setItems: (status: InvoiceItem[]) => void;
-  startDate: Date | null;
-  setStartDate: (status: Date | null) => void;
-  formattedDate: string;
+  newStartDate: Date | null;
+  setNewStartDate: (status: Date | null) => void;
+  invoice: Invoice[];
 }) {
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [openTerms, setOpenTerms] = useState(false);
+  const [markAsStatus, setMarkAsStatus] = useState(false);
+
   useEffect(() => {
     if (props.openNewInvoice) {
       document.body.style.overflowY = "hidden";
@@ -40,19 +44,40 @@ function NewInvoice(props: {
 
   const { handleSubmit, reset } = methods;
 
+  const formattedDate = new Date(
+    props.newStartDate ? props.newStartDate : new Date()
+  ).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
   const onSubmit = async (data: FormData) => {
     try {
       const invoiceData = {
         ...data,
-        invoice_date: props.startDate?.toISOString(),
+        invoiceDate: props.newStartDate?.toISOString() || formattedDate,
+        paymentTerms: props.netDays?.toString() || "",
+        invoiceStatus: markAsStatus ? "pending" : "draft",
       };
+      console.log("Invoice Data to Send:", invoiceData);
       await addInvoice(invoiceData);
+      console.log("Invoice added successfully");
     } catch (err) {
-      console.error("Error updating invoice:", err);
+      console.error("Error adding invoice:", err);
     }
     reset();
     props.setOpenNewInvoice(false);
+    props.setNewStartDate(null);
+    props.setNetDays(null);
+    props.setInvoice(await getInvoice());
+    setShowCalendar(false);
+    setOpenTerms(false);
   };
+
+  const { id } = useParams();
+
+  const selectedInvoice = props.invoice.find((item) => item.id === id);
 
   return (
     <div
@@ -102,9 +127,14 @@ function NewInvoice(props: {
                 darkMode={props.darkMode}
                 netDays={props.netDays}
                 setNetDays={props.setNetDays}
-                startDate={props.startDate}
-                setStartDate={props.setStartDate}
-                formattedDate={props.formattedDate}
+                newStartDate={props.newStartDate}
+                setNewStartDate={props.setNewStartDate}
+                formattedDate={formattedDate}
+                selectedInvoice={selectedInvoice}
+                showCalendar={showCalendar}
+                setShowCalendar={setShowCalendar}
+                openTerms={openTerms}
+                setOpenTerms={setOpenTerms}
               />
               <ItemList darkMode={props.darkMode} />
             </div>
@@ -113,30 +143,52 @@ function NewInvoice(props: {
             className={clsx(
               props.openNewInvoice ? "translate-x-0" : "translate-x-[-100rem]",
               props.darkMode ? "bg-[#141625]" : "bg-[#FFF]",
-              "md:justify-end md:max-w-[38.5rem] flex justify-center gap-[0.5rem] py-[1.5rem] px-[3.5rem] max-w-[23rem] w-full fixed bottom-0 shadow-custom-shadow-3"
+              "md:justify-between md:max-w-[38.5rem] flex justify-center gap-[0.5rem] py-[1.5rem] px-[3.5rem] max-w-[23rem] w-full fixed bottom-0 shadow-custom-shadow-3"
             )}
           >
             <button
               type="button"
               onClick={() => {
                 props.setOpenNewInvoice(false);
+                props.setNewStartDate(null);
+                props.setNetDays(null);
+                setShowCalendar(false);
+                setOpenTerms(false);
                 reset();
+                props.setNewStartDate(null);
               }}
               className={clsx(
                 props.darkMode
                   ? "bg-[#252945] text-[#888EB0]"
                   : "bg-[#F9FAFE] text-[#7E88C3]",
-                "text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] py-[1rem] select-none rounded-full max-w-[6rem] min-w-[6rem] w-full"
+                "md:min-w-[7.5rem] sm:min-w-[6.5rem] sm:text-[1rem] text-[0.8rem] leading-[1rem] tracking-[-0.015rem] font-[700] py-[1rem] select-none rounded-full max-w-[6rem] min-w-[6rem] w-full outline-none"
               )}
             >
-              Cancel
+              Discard
             </button>
-            <button
-              type="submit"
-              className="text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] text-[#FFF] bg-[#7C5DFA] py-[1rem] select-none rounded-full max-w-[8.5rem] min-w-[8rem] w-full"
-            >
-              Save Changes
-            </button>
+            <div className="flex gap-[0.5rem]">
+              <button
+                onClick={() => {
+                  setMarkAsStatus(false);
+                }}
+                type="submit"
+                className={clsx(
+                  props.darkMode ? "text-[#DFE3FA]" : "text-[#888EB0]",
+                  "md:min-w-[8rem] sm:min-w-[7rem] sm:text-[0.9rem] text-[0.7rem] sm:leading-[1rem] leading-[0rem] tracking-[-0.015rem] font-[700] bg-[#373B53] sm:py-[1rem] py-0 select-none rounded-full max-w-[8.5rem] min-w-[5rem] w-full outline-none"
+                )}
+              >
+                Save as Draft
+              </button>
+              <button
+                onClick={() => {
+                  setMarkAsStatus(true);
+                }}
+                type="submit"
+                className="md:min-w-[8rem] sm:min-w-[7rem] sm:text-[0.9rem] text-[0.7rem] sm:leading-[1rem] leading-[0rem] tracking-[-0.015rem] font-[700] text-[#FFF] bg-[#7C5DFA] sm:py-[1rem] py-0 select-none rounded-full max-w-[8.5rem] min-w-[5rem] w-full outline-none"
+              >
+                Save & Send
+              </button>
+            </div>
           </div>
         </form>
       </FormProvider>

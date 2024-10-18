@@ -1,16 +1,9 @@
-export type InvoiceItem = {
-  item_id: number;
-  item_name: string;
-  quantity: number;
-  price: number;
-};
-
 export type Invoice = {
-  invoice_id: number;
+  id: string;
+  invoice_status: string;
   invoice_date: string;
   payment_terms: string;
   project_description: string;
-  item_name: string;
   street_address: string;
   city: string;
   post_code: string;
@@ -21,6 +14,7 @@ export type Invoice = {
   clients_city: string;
   clients_post_code: string;
   clients_country: string;
+  item_name: string;
   quantity: number;
   price: number;
 };

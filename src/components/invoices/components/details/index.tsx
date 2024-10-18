@@ -1,58 +1,62 @@
 import clsx from "clsx";
 import { Link, useParams } from "react-router-dom";
 import arrowLeft from "/src/assets/icon-arrow-left.svg";
-import { Invoice, InvoiceItem } from "../../../utils/invoice-types";
+import { Invoice } from "../../../models/invoice-types";
 import ItemsTable from "../items-table";
 import EditInvoice from "../edit-invoice";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Deletion from "./deletion";
+import { handleChangeStatus } from "../../../utils/status_change";
 
 function Details(props: {
   darkMode: boolean;
   invoice: Invoice[];
   setInvoice: (status: Invoice[]) => void;
-  status: string;
-  setStatus: (status: string) => void;
-  items: InvoiceItem[];
-  netDays: number;
-  setNetDays: (status: number) => void;
-  formattedPayment: string;
-  setItems: (status: InvoiceItem[]) => void;
-  startDate: Date | null;
-  setStartDate: (status: Date | null) => void;
+  netDays: number | null;
+  setNetDays: (status: number | null) => void;
 }) {
   const [openEdit, setOpenEdit] = useState(false);
-
-  useEffect(() => {
-    if (props.startDate) {
-      localStorage.setItem("startDate", props.startDate.toISOString());
-    }
-  }, [props.startDate]);
+  const [confirmDeletion, setConfirmDeletion] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
 
   const { id } = useParams();
-  const invoiceIdNumber = Number(id);
 
-  const selectedInvoice = props.invoice.find(
-    (item) => item.invoice_id === invoiceIdNumber
-  );
-  const selectedItem = props.items.find(
-    (item) => item.item_id === invoiceIdNumber
-  );
+  const selectedInvoice = props.invoice.find((item) => item.id === id);
 
   if (!selectedInvoice) {
     return <h2>Invoice not found.</h2>;
   }
 
-  if (!selectedItem) {
-    return <h2>Item not found.</h2>;
-  }
+  const invoiceDate = new Date(selectedInvoice.invoice_date);
+  const paymentDueDate = new Date(invoiceDate);
+  paymentDueDate.setDate(
+    invoiceDate.getDate() + Number(selectedInvoice.payment_terms)
+  );
+
+  const formattedPayment = paymentDueDate.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 
   const formattedDate = new Date(
-    props.startDate || selectedInvoice.invoice_date
+    startDate ? startDate : selectedInvoice.invoice_date
   ).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
     year: "numeric",
   });
+
+  const markAsPaid = () => {
+    handleChangeStatus(selectedInvoice.id, "paid", (newStatus) => {
+      const updatedInvoices = props.invoice.map((inv) =>
+        inv.id === selectedInvoice.id
+          ? { ...inv, invoice_status: newStatus }
+          : inv
+      );
+      props.setInvoice(updatedInvoices);
+    });
+  };
 
   return (
     <>
@@ -88,32 +92,36 @@ function Details(props: {
               </h2>
               <div
                 className={clsx(
-                  props.status === "paid" && "bg-[#33d6a018]",
-                  props.status === "pending" && "bg-[#ff910018]",
-                  props.status === "draft" &&
+                  selectedInvoice.invoice_status === "paid" && "bg-[#33d6a018]",
+                  selectedInvoice.invoice_status === "pending" &&
+                    "bg-[#ff910018]",
+                  selectedInvoice.invoice_status === "draft" &&
                     (props.darkMode ? "bg-[#dfe3fa15]" : "bg-[#373b5311]"),
                   "flex justify-center items-baseline w-[6.5rem] py-[0.9rem] rounded-lg"
                 )}
               >
                 <span
                   className={clsx(
-                    props.status === "paid" && "bg-[#33D69F]",
-                    props.status === "pending" && "bg-[#FF8F00]",
-                    props.status === "draft" &&
+                    selectedInvoice.invoice_status === "paid" && "bg-[#33D69F]",
+                    selectedInvoice.invoice_status === "pending" &&
+                      "bg-[#FF8F00]",
+                    selectedInvoice.invoice_status === "draft" &&
                       (props.darkMode ? "bg-[#DFE3FA]" : "bg-[#373B53]"),
                     "flex w-[0.5rem] h-[0.5rem] rounded-full mr-[0.5rem]"
                   )}
                 ></span>
                 <h2
                   className={clsx(
-                    props.status === "paid" && "text-[#33D69F]",
-                    props.status === "pending" && "text-[#FF8F00]",
-                    props.status === "draft" &&
+                    selectedInvoice.invoice_status === "paid" &&
+                      "text-[#33D69F]",
+                    selectedInvoice.invoice_status === "pending" &&
+                      "text-[#FF8F00]",
+                    selectedInvoice.invoice_status === "draft" &&
                       (props.darkMode ? "text-[#DFE3FA]" : "text-[#373B53]"),
                     "text-[1rem] leading-[1rem] tracking-[0.015rem] font-[700]"
                   )}
                 >
-                  {props.status}
+                  {selectedInvoice.invoice_status}
                 </h2>
               </div>
             </div>
@@ -131,14 +139,17 @@ function Details(props: {
               >
                 Edit
               </button>
-              <button className="text-[1rem] leading-[1rem] tracking-[0.015rem] font-[700] text-[#FFF] bg-[#EC5757] px-[1.5rem] py-[1.1rem] rounded-full hover:bg-[#FF9797] transition-all duration-150">
+              <button
+                onClick={() => {
+                  setConfirmDeletion(true);
+                }}
+                className="text-[1rem] leading-[1rem] tracking-[0.015rem] font-[700] text-[#FFF] bg-[#EC5757] px-[1.5rem] py-[1.1rem] rounded-full hover:bg-[#FF9797] transition-all duration-150"
+              >
                 Delete
               </button>
-              {props.status !== "paid" && (
+              {selectedInvoice.invoice_status !== "paid" && (
                 <button
-                  onClick={() => {
-                    props.setStatus("paid");
-                  }}
+                  onClick={markAsPaid}
                   className="text-[1rem] leading-[1rem] tracking-[0.015rem] font-[700] text-[#FFF] bg-[#7C5DFA] px-[1.5rem] py-[1.1rem] rounded-full hover:bg-[#9277FF] transition-all duration-150"
                 >
                   Mark as Paid
@@ -165,7 +176,7 @@ function Details(props: {
                         "text-[1rem] leading-[1rem] tracking-[0.015rem] font-[700] break-words"
                       )}
                     >
-                      {selectedInvoice.invoice_id}
+                      {selectedInvoice.id.slice(0, 6)}
                     </h2>
                   </div>
                   <h3
@@ -248,7 +259,7 @@ function Details(props: {
                           "text-[1rem] leading-[1rem] tracking-[0.015rem] font-[700] break-words"
                         )}
                       >
-                        {props.formattedPayment}
+                        {formattedPayment}
                       </h2>
                     </div>
                   </div>
@@ -328,7 +339,6 @@ function Details(props: {
             <ItemsTable
               darkMode={props.darkMode}
               selectedInvoice={selectedInvoice}
-              selectedItem={selectedItem}
             />
           </div>
         </div>
@@ -351,14 +361,17 @@ function Details(props: {
           >
             Edit
           </button>
-          <button className="text-[1rem] leading-[1rem] tracking-[0.015rem] font-[700] text-[#FFF] bg-[#EC5757] px-[1.5rem] py-[1.1rem] rounded-full hover:bg-[#FF9797] transition-all duration-150">
+          <button
+            onClick={() => {
+              setConfirmDeletion(true);
+            }}
+            className="text-[1rem] leading-[1rem] tracking-[0.015rem] font-[700] text-[#FFF] bg-[#EC5757] px-[1.5rem] py-[1.1rem] rounded-full hover:bg-[#FF9797] transition-all duration-150"
+          >
             Delete
           </button>
-          {props.status !== "paid" && (
+          {selectedInvoice.invoice_status !== "paid" && (
             <button
-              onClick={() => {
-                props.setStatus("paid");
-              }}
+              onClick={markAsPaid}
               className="text-[1rem] leading-[1rem] tracking-[0.015rem] font-[700] text-[#FFF] bg-[#7C5DFA] px-[1.5rem] py-[1.1rem] rounded-full hover:bg-[#9277FF] transition-all duration-150"
             >
               Mark as Paid
@@ -371,14 +384,20 @@ function Details(props: {
         selectedInvoice={selectedInvoice}
         openEdit={openEdit}
         setOpenEdit={setOpenEdit}
-        selectedItem={selectedItem}
         netDays={props.netDays}
         setNetDays={props.setNetDays}
         setInvoice={props.setInvoice}
-        setItems={props.setItems}
-        startDate={props.startDate}
-        setStartDate={props.setStartDate}
+        startDate={startDate}
+        setStartDate={setStartDate}
         formattedDate={formattedDate}
+      />
+      <Deletion
+        darkMode={props.darkMode}
+        confirmDeletion={confirmDeletion}
+        setConfirmDeletion={setConfirmDeletion}
+        selectedInvoice={selectedInvoice}
+        invoice={props.invoice}
+        setInvoice={props.setInvoice}
       />
     </>
   );

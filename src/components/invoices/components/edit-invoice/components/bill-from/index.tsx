@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Invoice } from "../../../../../utils/invoice-types";
+import { Invoice } from "../../../../../models/invoice-types";
 import { useFormContext } from "react-hook-form";
 
 function BillFrom(props: { darkMode: boolean; selectedInvoice: Invoice }) {
@@ -26,17 +26,17 @@ function BillFrom(props: { darkMode: boolean; selectedInvoice: Invoice }) {
           >
             Street Address
           </h3>
-          {errors.streetAddress &&
-            typeof errors.streetAddress.message === "string" && (
-              <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
-                {errors.streetAddress.message}
-              </span>
-            )}
+          {errors.streetAddress && (
+            <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#EC5757] mr-[1rem]">
+              {errors.streetAddress.message?.toString()}
+            </span>
+          )}
         </div>
         <input
           {...register("streetAddress")}
           type="text"
           id="street-address"
+           autoComplete="street-address"
           placeholder={props.selectedInvoice.street_address}
           className={clsx(
             errors.streetAddress && props.darkMode
@@ -66,9 +66,9 @@ function BillFrom(props: { darkMode: boolean; selectedInvoice: Invoice }) {
               >
                 City
               </h3>
-              {errors.city && typeof errors.city.message === "string" && (
+              {errors.city && (
                 <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#F45f] mr-[1rem]">
-                  {errors.city.message}
+                  {errors.city.message?.toString()}
                 </span>
               )}
             </div>
@@ -103,12 +103,11 @@ function BillFrom(props: { darkMode: boolean; selectedInvoice: Invoice }) {
               >
                 Post Code
               </h3>
-              {errors.postCode &&
-                typeof errors.postCode.message === "string" && (
-                  <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#F45f] mr-[1rem]">
-                    {errors.postCode.message}
-                  </span>
-                )}
+              {errors.postCode && (
+                <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#F45f] mr-[1rem]">
+                  {errors.postCode.message?.toString()}
+                </span>
+              )}
             </div>
             <input
               {...register("postCode")}
@@ -142,9 +141,9 @@ function BillFrom(props: { darkMode: boolean; selectedInvoice: Invoice }) {
             >
               Country
             </h3>
-            {errors.country && typeof errors.country.message === "string" && (
+            {errors.country && (
               <span className="text-[0.625rem] leading-[1rem] tracking-[-0.015rem] text-[#F45f] mr-[1rem]">
-                {errors.country.message}
+                {errors.country.message?.toString()}
               </span>
             )}
           </div>
@@ -152,6 +151,7 @@ function BillFrom(props: { darkMode: boolean; selectedInvoice: Invoice }) {
             {...register("country")}
             type="text"
             id="country"
+             autoComplete="country"
             placeholder={props.selectedInvoice.country}
             className={clsx(
               errors.country && props.darkMode

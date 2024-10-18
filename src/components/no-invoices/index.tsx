@@ -1,7 +1,10 @@
 import clsx from "clsx";
 import illustrationEmpty from "/src/assets/illustration-empty.svg";
 
-function NoInvoices(props: { darkMode: boolean }) {
+function NoInvoices(props: {
+  darkMode: boolean;
+  setOpenNewInvoice: (status: boolean) => void;
+}) {
   return (
     <div className="mt-[5rem]">
       <img
@@ -29,6 +32,9 @@ function NoInvoices(props: { darkMode: boolean }) {
           </h3>
           <div className="flex gap-[0.3rem]">
             <button
+              onClick={() => {
+                props.setOpenNewInvoice(true);
+              }}
               className={clsx(
                 props.darkMode ? "text-[#DFE3FA]" : "text-[#888EB0]",
                 "text-[0.8rem] leading-[1rem] font-[700]"

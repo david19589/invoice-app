@@ -1,16 +1,20 @@
-import { useState } from "react";
 import Check from "/src/assets/icon-check.svg";
 import clsx from "clsx";
 
-function Filter(props: { darkMode: boolean; openFilter: boolean }) {
-  const [checked, setChecked] = useState({
-    draft: false,
-    pending: false,
-    paid: false,
-  });
+interface statuses {
+  draft: boolean;
+  pending: boolean;
+  paid: boolean;
+}
 
+function Filter(props: {
+  darkMode: boolean;
+  openFilter: boolean;
+  checked: statuses;
+  setChecked: (status: statuses) => void;
+}) {
   const handleCheckboxClick = (id: "draft" | "pending" | "paid") => {
-    setChecked({ ...checked, [id]: !checked[id] });
+    props.setChecked({ ...props.checked, [id]: !props.checked[id] });
   };
 
   return (
@@ -28,15 +32,15 @@ function Filter(props: { darkMode: boolean; openFilter: boolean }) {
           >
             <span
               className={clsx(
-                props.darkMode && !checked.draft
+                props.darkMode && !props.checked.draft
                   ? "bg-[#1E2139]"
-                  : checked.draft
+                  : props.checked.draft
                   ? "bg-[#7C5DFA]"
                   : "bg-[#DFE3FA] group-hover:border-[0.0625rem] group-hover:border-[#7C5DFA]",
                 "flex w-4 h-4 rounded-sm transition-all duration-150 select-none"
               )}
             >
-              {checked.draft && (
+              {props.checked.draft && (
                 <img src={Check} alt="Check" className="p-[0.2rem]" />
               )}
             </span>
@@ -55,15 +59,15 @@ function Filter(props: { darkMode: boolean; openFilter: boolean }) {
           >
             <span
               className={clsx(
-                props.darkMode && !checked.pending
+                props.darkMode && !props.checked.pending
                   ? "bg-[#1E2139]"
-                  : checked.pending
+                  : props.checked.pending
                   ? "bg-[#7C5DFA]"
                   : "bg-[#DFE3FA] group-hover:border-[0.0625rem] group-hover:border-[#7C5DFA]",
                 "flex w-4 h-4 rounded-sm transition-all duration-150 select-none"
               )}
             >
-              {checked.pending && (
+              {props.checked.pending && (
                 <img src={Check} alt="Check" className="p-[0.2rem]" />
               )}
             </span>
@@ -82,15 +86,15 @@ function Filter(props: { darkMode: boolean; openFilter: boolean }) {
           >
             <span
               className={clsx(
-                props.darkMode && !checked.paid
+                props.darkMode && !props.checked.paid
                   ? "bg-[#1E2139]"
-                  : checked.paid
+                  : props.checked.paid
                   ? "bg-[#7C5DFA]"
                   : "bg-[#DFE3FA] group-hover:border-[0.0625rem] group-hover:border-[#7C5DFA]",
                 "flex w-4 h-4 rounded-sm transition-all duration-150 select-none"
               )}
             >
-              {checked.paid && (
+              {props.checked.paid && (
                 <img src={Check} alt="Check" className="p-[0.2rem]" />
               )}
             </span>

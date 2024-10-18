@@ -20,14 +20,22 @@ export type FormData = {
 };
 
 export const schema: ZodType<FormData> = z.object({
-  streetAddress: z.string().max(40, { message: "max 40 char." }).optional(),
-  city: z
+  streetAddress: z
     .string()
-    .max(25, { message: "max 25 char." })
+    .max(40, { message: "max 40 char." })
     .optional()
     .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
       message: "Invalid character.",
     }),
+
+  city: z
+    .string()
+    .max(25, { message: "max 25 char." })
+    .optional()
+    .refine((val) => !val || /^[A-Za-z ]+$/.test(val), {
+      message: "Invalid character.",
+    }),
+
   postCode: z
     .string()
     .max(10, { message: "max 10 char." })
@@ -35,20 +43,23 @@ export const schema: ZodType<FormData> = z.object({
     .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
       message: "Invalid character.",
     }),
+
   country: z
     .string()
     .max(40, { message: "max 40 char." })
     .optional()
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
+    .refine((val) => !val || /^[A-Za-z ]+$/.test(val), {
       message: "Invalid character.",
     }),
+
   clientsName: z
     .string()
     .max(25, { message: "max 25 char." })
     .optional()
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
+    .refine((val) => !val || /^[A-Za-z ]+$/.test(val), {
       message: "Invalid character.",
     }),
+
   clientsEmail: z
     .union([
       z
@@ -58,6 +69,7 @@ export const schema: ZodType<FormData> = z.object({
       z.literal(""),
     ])
     .optional(),
+
   clientsStreetAddress: z
     .string()
     .max(40, { message: "max 40 char." })
@@ -65,13 +77,15 @@ export const schema: ZodType<FormData> = z.object({
     .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
       message: "Invalid character.",
     }),
+
   clientsCity: z
     .string()
     .max(40, { message: "max 40 char." })
     .optional()
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
+    .refine((val) => !val || /^[A-Za-z ]+$/.test(val), {
       message: "Invalid character.",
     }),
+
   clientsPostCode: z
     .string()
     .max(10, { message: "max 10 char." })
@@ -79,37 +93,44 @@ export const schema: ZodType<FormData> = z.object({
     .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
       message: "Invalid character.",
     }),
+
   clientsCountry: z
     .string()
     .max(40, { message: "max 40 char." })
     .optional()
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
+    .refine((val) => !val || /^[A-Za-z ]+$/.test(val), {
       message: "Invalid character.",
     }),
+
   invoiceDate: z.string().optional(),
+
   paymentTerms: z.string().optional(),
+
   projectDescription: z
     .string()
     .max(40, { message: "max 40 char." })
     .optional()
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
+    .refine((val) => !val || /^[A-Za-z ]+$/.test(val), {
       message: "Invalid character.",
     }),
+
   itemName: z
     .string()
     .max(30, { message: "max 30 char." })
     .optional()
-    .refine((val) => !val || /^[A-Za-z0-9 ]+$/.test(val), {
+    .refine((val) => !val || /^[A-Za-z ]+$/.test(val), {
       message: "Invalid character.",
     }),
+
   quantity: z
     .number({ message: "invalid." })
-    .min(1,{ message: "min 1 num." })
-    .max(9999,{ message: "max 4 num." })
+    .min(1, { message: "min 1 num." })
+    .max(9999, { message: "max 4 num." })
     .optional(),
+
   price: z
     .number({ message: "invalid." })
-    .min(1,{ message: "min 1 num." })
-    .max(9999999,{ message: "max 7 num." })
+    .min(1, { message: "min 1 num." })
+    .max(9999999, { message: "max 7 num." })
     .optional(),
 });
