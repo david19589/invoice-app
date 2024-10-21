@@ -6,6 +6,11 @@ function BillFrom(props: { darkMode: boolean }) {
     register,
     formState: { errors },
   } = useFormContext();
+
+  const DarkModeStyles = props.darkMode
+    ? "bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF] border-[#252945] focus:border-[#7C5DFA]"
+    : "bg-[#FFF] placeholder:text-[#0C0E16] text-[#0C0E16] border-[#DFE3FA] focus:border-[#9277FF]";
+
   return (
     <div>
       <h2 className="text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] text-[#7C5DFA] mb-[1.5rem]">
@@ -41,9 +46,7 @@ function BillFrom(props: { darkMode: boolean }) {
               ? "border-[#EC5757] bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF]"
               : errors.streetAddress
               ? "border-[#EC5757]"
-              : props.darkMode
-              ? "bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF] border-[#252945] focus:border-[#7C5DFA]"
-              : "bg-[#FFF] placeholder:text-[#0C0E16] text-[#0C0E16] border-[#DFE3FA] focus:border-[#9277FF]",
+              : DarkModeStyles,
             "text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] mb-[0.5rem] outline-none border-[0.0625rem] max-w-[31.5rem] w-full px-[1.25rem] py-[1rem] rounded-lg"
           )}
         />
@@ -79,9 +82,7 @@ function BillFrom(props: { darkMode: boolean }) {
                   ? "border-[#EC5757] bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF]"
                   : errors.city
                   ? "border-[#EC5757]"
-                  : props.darkMode
-                  ? "bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF] border-[#252945] focus:border-[#7C5DFA]"
-                  : "bg-[#FFF] placeholder:text-[#0C0E16] text-[#0C0E16] border-[#DFE3FA] focus:border-[#9277FF]",
+                  : DarkModeStyles,
                 "text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] mb-[0.5rem] outline-none border-[0.0625rem] max-w-[9.5rem] w-full px-[1.25rem] py-[1rem] rounded-lg"
               )}
             />
@@ -115,9 +116,7 @@ function BillFrom(props: { darkMode: boolean }) {
                   ? "border-[#EC5757] bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF]"
                   : errors.postCode
                   ? "border-[#EC5757]"
-                  : props.darkMode
-                  ? "bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF] border-[#252945] focus:border-[#7C5DFA]"
-                  : "bg-[#FFF] placeholder:text-[#0C0E16] text-[#0C0E16] border-[#DFE3FA] focus:border-[#9277FF]",
+                  : DarkModeStyles,
                 "text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] mb-[0.5rem] outline-none border-[0.0625rem] max-w-[9.5rem] w-full px-[1.25rem] py-[1rem] rounded-lg"
               )}
             />
@@ -153,9 +152,7 @@ function BillFrom(props: { darkMode: boolean }) {
                 ? "border-[#EC5757] bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF]"
                 : errors.country
                 ? "border-[#EC5757]"
-                : props.darkMode
-                ? "bg-[#1E2139] placeholder:text-[#FFF] text-[#FFF] border-[#252945] focus:border-[#7C5DFA]"
-                : "bg-[#FFF] placeholder:text-[#0C0E16] text-[#0C0E16] border-[#DFE3FA] focus:border-[#9277FF]",
+                : DarkModeStyles,
               "md:max-w-[9.5rem] text-[1rem] leading-[1rem] tracking-[-0.015rem] font-[700] mb-[0.5rem] outline-none border-[0.0625rem] max-w-[31.5rem] w-full px-[1.25rem] py-[1rem] rounded-lg"
             )}
           />
