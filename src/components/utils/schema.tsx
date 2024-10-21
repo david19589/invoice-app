@@ -1,5 +1,11 @@
 import { z, ZodType } from "zod";
 
+export type Item = {
+  itemName: string;
+  quantity: number;
+  price: number;
+};
+
 export type FormData = {
   streetAddress?: string;
   city?: string;
@@ -14,9 +20,7 @@ export type FormData = {
   invoiceDate?: string;
   paymentTerms?: string;
   projectDescription?: string;
-  itemName?: string;
-  quantity?: number;
-  price?: number;
+  items?: Item[];
 };
 
 export const schema: ZodType<FormData> = z.object({
@@ -114,23 +118,23 @@ export const schema: ZodType<FormData> = z.object({
       message: "Invalid character.",
     }),
 
-  itemName: z
-    .string()
-    .max(30, { message: "max 30 char." })
-    .optional()
-    .refine((val) => !val || /^[A-Za-z ]+$/.test(val), {
-      message: "Invalid character.",
-    }),
+  items: z.array(
+    z.object({
+      itemName: z
+        .string()
+        .min(1, { message: "min 1 char." })
+        .max(30, { message: "max 30 char." })
+        .regex(/^[A-Za-z ]+$/, { message: "Invalid character." }),
 
-  quantity: z
-    .number({ message: "invalid." })
-    .min(1, { message: "min 1 num." })
-    .max(9999, { message: "max 4 num." })
-    .optional(),
+      quantity: z
+        .number({ message: "invalid." })
+        .min(1, { message: "min 1 num." })
+        .max(9999, { message: "max 4 num." }),
 
-  price: z
-    .number({ message: "invalid." })
-    .min(1, { message: "min 1 num." })
-    .max(9999999, { message: "max 7 num." })
-    .optional(),
+      price: z
+        .number({ message: "invalid." })
+        .min(1, { message: "min 1 num." })
+        .max(9999999, { message: "max 7 num." }),
+    })
+  ),
 });

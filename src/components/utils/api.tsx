@@ -4,7 +4,6 @@ import { FormData } from "../utils/schema";
 const apiUrl = "http://localhost:5000/inv";
 
 const handleRequest = async <T,>(method: string, endpoint = "", data?: T) => {
-  console.log("Sending invoice data to API:", data);
   try {
     const response = await axios({ method, url: `${apiUrl}${endpoint}`, data });
     return response.data;
