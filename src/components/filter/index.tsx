@@ -1,17 +1,17 @@
 import Check from "/src/assets/icon-check.svg";
 import clsx from "clsx";
 
-interface statuses {
+type Statuses = {
   draft: boolean;
   pending: boolean;
   paid: boolean;
-}
+};
 
 function Filter(props: {
   darkMode: boolean;
   openFilter: boolean;
-  checked: statuses;
-  setChecked: (status: statuses) => void;
+  checked: Statuses;
+  setChecked: (status: Statuses) => void;
 }) {
   const handleCheckboxClick = (id: "draft" | "pending" | "paid") => {
     props.setChecked({ ...props.checked, [id]: !props.checked[id] });

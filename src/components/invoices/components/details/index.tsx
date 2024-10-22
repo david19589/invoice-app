@@ -6,7 +6,7 @@ import ItemsTable from "../items-table";
 import EditInvoice from "../edit-invoice";
 import { useState } from "react";
 import Deletion from "./deletion";
-import { handleChangeStatus } from "../../../utils/status_change";
+import { handleChangeStatus } from "../../../../utils/status_change";
 
 function Details(props: {
   darkMode: boolean;

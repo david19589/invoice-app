@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Invoice } from "../../../../models/invoice-types";
-import { invoiceDeletion } from "../../../../utils/api";
+import { invoiceDeletion } from "../../../../../utils/api";
 
 function Deletion(props: {
   darkMode: boolean;

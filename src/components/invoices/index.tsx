@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { Invoice } from "../models/invoice-types";
 import arrow from "/src/assets/icon-arrow-right.svg";
 
-interface statuses {
+type Statuses = {
   draft: boolean;
   pending: boolean;
   paid: boolean;
-}
+};
 
 function Invoices({
   darkMode,
@@ -16,7 +16,7 @@ function Invoices({
 }: {
   darkMode: boolean;
   invoice: Invoice[];
-  checked: statuses;
+  checked: Statuses;
 }) {
   const anyChecked = checked.draft || checked.pending || checked.paid;
 

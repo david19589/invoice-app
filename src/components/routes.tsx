@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Details from "./invoices/components/details";
 import { useEffect, useState } from "react";
 import { Invoice } from "./models/invoice-types";
-import { getInvoice } from "./utils/api";
+import { getInvoice } from ".././utils/api";
 
 function PageRoutes(props: { darkMode: boolean }) {
   const [invoice, setInvoice] = useState<Invoice[]>([]);

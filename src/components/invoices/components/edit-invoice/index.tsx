@@ -7,8 +7,8 @@ import BillFrom from "./components/bill-from";
 import BillTo from "./components/bill-to";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormData, schema } from "../../../utils/schema";
-import { getInvoice, updateInvoice } from "../../../utils/api";
+import { FormData, schema } from "../../../../utils/schema";
+import { getInvoice, updateInvoice } from "../../../../utils/api";
 import deleteIcon from "/src/assets/icon-delete.svg";
 
 function EditInvoice(props: {
