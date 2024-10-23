@@ -1,7 +1,7 @@
 import axios from "axios";
 import { FormData } from "../utils/schema";
 
-const apiUrl = "http://localhost:5000/inv";
+const apiUrl = "https://invoice-app-backend-dzk2.onrender.com";
 
 const handleRequest = async <T,>(method: string, endpoint = "", data?: T) => {
   try {
